@@ -156,4 +156,5 @@ def parse_arguments(argv):
     return parser.parse_args(argv)
 
 if __name__ == '__main__':
+    # python align_dataset_mtcnn.py ~/Data/lfw ~/Data/lfw_160 --image_size 160 --margin 32 --random_order
     main(parse_arguments(sys.argv[1:]))

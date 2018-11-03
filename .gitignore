@@ -1,3 +1,6 @@
+logs/
+models/
+data/images
 led / optimized / DLL files
 __pycache__/
 *.py[cod]

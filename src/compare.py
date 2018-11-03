@@ -1,3 +1,4 @@
+# coding=utf-8
 """Performs face alignment and calculates L2 distance between the embeddings of images."""
 
 # MIT License
@@ -38,6 +39,7 @@ import align.detect_face
 
 def main(args):
 
+    # print('args:', args)
     images = load_and_align_data(args.image_files, args.image_size, args.margin, args.gpu_memory_fraction)
     with tf.Graph().as_default():
 
@@ -101,6 +103,7 @@ def load_and_align_data(image_paths, image_size, margin, gpu_memory_fraction):
           continue
         det = np.squeeze(bounding_boxes[0,0:4])
         bb = np.zeros(4, dtype=np.int32)
+        # 增加人脸bbox间隔margin进行crop
         bb[0] = np.maximum(det[0]-margin/2, 0)
         bb[1] = np.maximum(det[1]-margin/2, 0)
         bb[2] = np.minimum(det[2]+margin/2, img_size[1])
@@ -118,13 +121,17 @@ def parse_arguments(argv):
     parser.add_argument('model', type=str, 
         help='Could be either a directory containing the meta_file and ckpt_file or a model protobuf (.pb) file')
     parser.add_argument('image_files', type=str, nargs='+', help='Images to compare')
+    # 默认输入图像大小160
     parser.add_argument('--image_size', type=int,
         help='Image size (height, width) in pixels.', default=160)
+    # 在人脸bbox框附近的crop margin
     parser.add_argument('--margin', type=int,
         help='Margin for the crop around the bounding box (height, width) in pixels.', default=44)
+    # 使用的GPU分配上限，默认为1，表示没有上限
     parser.add_argument('--gpu_memory_fraction', type=float,
         help='Upper bound on the amount of GPU memory that will be used by the process.', default=1.0)
     return parser.parse_args(argv)
 
 if __name__ == '__main__':
+    # python compare.py ~/GitHub/GitWeb/facenet/models/20180408-102900 ~/GitHub/GitWeb/facenet/data/images/Abdullah_Gul_0005.jpg ~/GitHub/GitWeb/facenet/data/images/Abdullah_Gul_0006.jpg
     main(parse_arguments(sys.argv[1:]))
